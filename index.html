@@ -1,301 +1,417 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BackGaming">
-<meta name="theme-color" content="#0b0620">
+<meta name="theme-color" content="#0d0221" id="themeColorMeta">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>BackGaming</title>
 <style>
 :root{
-  --bg:#0b0620;--panel:#170e36;--panel2:#21154b;--line:#33246e;
-  --pink:#ff3ea5;--cyan:#22e4ff;--yellow:#ffd23f;--green:#3dff8a;--red:#ff4d5e;--orange:#ff9a3d;
-  --text:#f3eaff;--dim:#9d8fc7;
-  --pix:"Courier New",ui-monospace,Menlo,monospace;
-  --sat:env(safe-area-inset-top);--sab:env(safe-area-inset-bottom);--sal:0px;--sar:0px;
+  --bg:#0d0221;--bg2:#1a0b3a;--panel:#241050;--panel2:#2e1563;--text:#f4ecff;--muted:#a99bd1;
+  --accent:#ff2a6d;--accent2:#05d9e8;--accent3:#f9c80e;--good:#3cff8f;--bad:#ff3860;
+  --border:3px;--radius:4px;--font:"Courier New",ui-monospace,monospace;--title-font:var(--font);
+  --pattern:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.025) 3px 4px);
+  --glow:0 0 12px var(--accent);--card-shadow:4px 4px 0 #000;
+  --st:max(env(safe-area-inset-top),20px);--sb:env(safe-area-inset-bottom);
 }
-.rot-l{--sat:env(safe-area-inset-left);--sab:12px;--sal:0px;--sar:env(safe-area-inset-bottom)}
-.rot-r{--sat:env(safe-area-inset-right);--sab:12px;--sal:env(safe-area-inset-bottom);--sar:0px}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;width:100%;height:100%;background:var(--bg);overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:var(--text);touch-action:manipulation;-webkit-user-select:none;user-select:none}
-input,textarea,select{-webkit-user-select:text;user-select:text}
-button{font:inherit;color:inherit;cursor:pointer}
-svg{display:block}
-
-#root{position:fixed;left:0;top:0;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);transform-origin:top left;padding-left:var(--sal);padding-right:var(--sar)}
-
-/* ---------- animated background ---------- */
-.bg{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
-.stars{position:absolute;left:0;right:0;top:-260px;bottom:0;background-image:
- radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 120px 80px,#cfc3ff,transparent),
- radial-gradient(2px 2px at 200px 150px,#fff,transparent),radial-gradient(1px 1px at 300px 60px,#9ff,transparent),
- radial-gradient(1px 1px at 60px 200px,#fff,transparent),radial-gradient(1px 1px at 250px 230px,#ffb3e0,transparent);
- background-size:320px 260px;opacity:.55;animation:drift 40s linear infinite}
-@keyframes drift{to{transform:translateY(260px)}}
-.sun{position:absolute;left:50%;bottom:30%;width:220px;height:220px;margin-left:-110px;border-radius:50%;
- background:linear-gradient(#ffd23f,#ff3ea5 70%);opacity:.18;filter:blur(1px);
- -webkit-mask-image:repeating-linear-gradient(#000 0 14px,transparent 14px 18px);mask-image:repeating-linear-gradient(#000 0 14px,transparent 14px 18px)}
-.grid{position:absolute;left:-50%;right:-50%;bottom:0;height:34%;
- background-image:linear-gradient(rgba(255,62,165,.5) 2px,transparent 2px),linear-gradient(90deg,rgba(255,62,165,.5) 2px,transparent 2px);
- background-size:44px 44px;transform:perspective(260px) rotateX(62deg);transform-origin:bottom;animation:gridmove 1.6s linear infinite;
- -webkit-mask-image:linear-gradient(transparent,#000 60%);mask-image:linear-gradient(transparent,#000 60%);opacity:.35}
-@keyframes gridmove{to{background-position:0 44px}}
-
-/* ---------- header ---------- */
-header{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;
- padding:calc(var(--sat) + 18px) 16px 12px;background:linear-gradient(#0b0620 70%,rgba(11,6,32,.85));border-bottom:2px solid var(--line)}
-.logo{font-family:var(--pix);font-weight:900;font-size:23px;letter-spacing:.5px;line-height:1;white-space:nowrap;cursor:pointer}
-.logo .b{color:var(--cyan);text-shadow:2px 2px 0 #0a4b66}
-.logo .g{color:var(--pink);text-shadow:2px 2px 0 #6b0e44}
-.logo.wiggle span{display:inline-block;animation:wig .5s}
-@keyframes wig{25%{transform:translateY(-4px) rotate(-3deg)}75%{transform:translateY(2px) rotate(3deg)}}
-.hud{display:flex;align-items:center;gap:10px}
-.lvlbox{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.lvl{font-family:var(--pix);font-weight:900;font-size:12px;color:var(--yellow)}
-.lvl b{font-size:15px;margin-left:3px}
-.xpbar{width:74px;height:8px;background:#2a1f55;border:2px solid #000;box-shadow:0 0 0 1px #4a3a8c;position:relative;overflow:hidden}
-.xpbar i{position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,var(--green) 0 5px,#2bd170 5px 7px);transition:width .8s cubic-bezier(.2,1.4,.4,1)}
-.iconbtn{width:38px;height:38px;border-radius:8px;background:var(--panel2);border:2px solid var(--line);display:grid;place-items:center;color:var(--cyan);padding:0}
-.iconbtn svg{width:20px;height:20px}
-
-/* ---------- main ---------- */
-main{position:relative;z-index:2;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:14px 14px 110px}
-.sec-title{display:flex;align-items:baseline;justify-content:space-between;margin:4px 2px 12px}
-.sec-title span{font-family:var(--pix);font-weight:900;font-size:18px;color:var(--yellow);text-shadow:2px 2px 0 #6b4a00;letter-spacing:1px}
-.sec-title small{font-family:var(--pix);font-size:12px;color:var(--dim);font-weight:700}
-.tools{display:flex;gap:8px;margin-bottom:10px}
-.tools input{flex:1;min-width:0}
-input,select,textarea{font-size:16px;font-family:inherit;color:var(--text);background:#0f0828;border:2px solid var(--line);border-radius:8px;padding:10px 12px;outline:none;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,228,255,.2)}
-select{-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
-.tools select{width:118px;flex:none}
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;font-family:var(--pix);font-weight:800;font-size:12px;padding:6px 10px;border-radius:20px;background:var(--panel);border:2px solid var(--line);color:var(--dim)}
-.chip.on{background:var(--cyan);color:#05202a;border-color:var(--cyan)}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--pix);font-weight:900;font-size:14px;letter-spacing:.5px;
- padding:12px 14px;border-radius:8px;border:2px solid #000;background:var(--panel2);color:var(--text);
- box-shadow:inset -3px -3px 0 rgba(0,0,0,.35),inset 3px 3px 0 rgba(255,255,255,.12),0 3px 0 #000;transition:transform .08s}
-.btn:active{transform:translateY(3px);box-shadow:inset -3px -3px 0 rgba(0,0,0,.35),inset 3px 3px 0 rgba(255,255,255,.12),0 0 0 #000}
-.btn svg{width:16px;height:16px}
-.btn.primary{background:var(--pink);color:#fff}
-.btn.cyan{background:var(--cyan);color:#05202a}
-.btn.danger{background:var(--red);color:#fff}
-.btn.ghost{background:transparent;border-color:var(--line);box-shadow:none;color:var(--dim)}
-.btn.sm{font-size:12px;padding:9px 10px}
-.btn.wide{width:100%;margin-top:10px}
-.roll{width:100%;margin-bottom:14px;background:linear-gradient(90deg,#5b2bff,#ff3ea5);color:#fff}
-.roll svg{width:18px;height:18px}
-
-.list{display:flex;flex-direction:column;gap:10px}
-.card{display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;padding:10px;background:var(--panel);
- border:2px solid var(--line);border-radius:12px;box-shadow:0 4px 0 #07031a;position:relative;overflow:hidden}
-.card:active{background:var(--panel2)}
-.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pc,#7f7aa8)}
-.card.new{animation:spawn .7s cubic-bezier(.2,1.6,.4,1)}
-@keyframes spawn{0%{transform:scale(.4) translateY(40px);opacity:0;filter:brightness(3)}60%{filter:brightness(1.6)}100%{transform:none;opacity:1;filter:none}}
-.card.dying{animation:die .55s steps(7) forwards}
-@keyframes die{0%{transform:none}15%{transform:translateX(-7px)}30%{transform:translateX(7px)}45%{transform:translateX(-4px);filter:hue-rotate(120deg) saturate(3)}70%{opacity:.5;transform:scale(.95)}100%{opacity:0;transform:scale(.7)}}
-.card.playing{border-color:#1d6c80;background:linear-gradient(135deg,#102a3d,var(--panel) 60%)}
-.card.done{border-color:#6b5a14;background:linear-gradient(135deg,#2e2608,var(--panel) 60%)}
-.cover{width:58px;height:78px;border-radius:6px;overflow:hidden;border:2px solid #000;background:#000;position:relative;flex:none}
-.cover img{width:100%;height:100%;object-fit:cover;display:block}
-.gen{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(160deg,hsl(var(--h),85%,55%),hsl(calc(var(--h) + 60),80%,30%));position:relative}
-.gen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.18) 2px 3px)}
-.gen b{font-family:var(--pix);font-weight:900;font-size:22px;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.5);position:relative;z-index:1}
-.info{min-width:0}
-.title{font-weight:800;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.meta{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0;align-items:center}
-.tag{font-family:var(--pix);font-weight:900;font-size:11px;padding:2px 6px;border-radius:4px;background:var(--pc);color:#000}
-.genre{font-size:12px;color:var(--dim)}
-.subline{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
-.hype{display:flex;gap:3px;align-items:flex-end;height:12px}
-.hype i{width:6px;background:#2c2357;border-radius:1px}
-.hype i:nth-child(1){height:4px}.hype i:nth-child(2){height:6px}.hype i:nth-child(3){height:8px}.hype i:nth-child(4){height:10px}.hype i:nth-child(5){height:12px}
-.hype i.on:nth-child(1){background:#3dff8a}.hype i.on:nth-child(2){background:#b6ff3d}.hype i.on:nth-child(3){background:#ffd23f}.hype i.on:nth-child(4){background:#ff9a3d}.hype i.on:nth-child(5){background:#ff3e5e}
-.hypelbl{font-family:var(--pix);font-weight:800;font-size:11px}
-.stars-sm{color:var(--yellow);letter-spacing:1px;font-size:13px}
-.stars-sm .off{color:#3b2f6b}
-.act{width:58px;height:58px;border-radius:10px;border:2px solid #000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;
- font-family:var(--pix);font-weight:900;font-size:10px;box-shadow:inset -3px -3px 0 rgba(0,0,0,.3),inset 3px 3px 0 rgba(255,255,255,.25),0 3px 0 #000}
-.act:active{transform:translateY(3px);box-shadow:inset -3px -3px 0 rgba(0,0,0,.3),0 0 0 #000}
-.act svg{width:18px;height:18px}
-.act.start{background:var(--cyan);color:#05202a}
-.act.clear{background:var(--green);color:#052a14;animation:pulse 1.6s infinite}
-@keyframes pulse{50%{box-shadow:inset -3px -3px 0 rgba(0,0,0,.3),inset 3px 3px 0 rgba(255,255,255,.25),0 3px 0 #000,0 0 14px var(--green)}}
-.badge-now{position:absolute;right:8px;top:6px;font-family:var(--pix);font-size:9px;font-weight:900;color:var(--cyan);animation:blink 1s steps(2) infinite}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);overscroll-behavior:none}
+body{font-family:var(--font);color:var(--text);-webkit-user-select:none;user-select:none;transition:background .4s}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--pattern),linear-gradient(180deg,var(--bg),var(--bg2));transition:background .4s}
+#app.rotfix{transform-origin:top left}
+header{padding:calc(var(--st) + 14px) 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo{font-family:var(--title-font);font-size:24px;font-weight:900;letter-spacing:1px;color:var(--accent);text-shadow:2px 2px 0 var(--accent2),var(--glow)}
+.logo small{display:block;font-size:10px;letter-spacing:3px;color:var(--muted);text-shadow:none;font-weight:700}
+.xpbox{text-align:right;font-size:11px;color:var(--muted);min-width:110px}
+.xpbar{height:8px;background:var(--panel);border:2px solid var(--accent2);margin-top:4px;border-radius:var(--radius);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent));transition:width .6s}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 14px 110px}
+.tabs-top{display:flex;gap:6px;margin:6px 0 10px}
+.tabs-top button{flex:1}
+button,.btn{font-family:var(--font);font-weight:800;font-size:13px;color:var(--text);background:var(--panel);border:var(--border) solid var(--accent2);border-radius:var(--radius);padding:9px 8px;box-shadow:var(--card-shadow);cursor:pointer;transition:transform .08s}
+button:active{transform:translate(2px,2px);box-shadow:none}
+button.on{background:var(--accent);border-color:var(--accent3);color:#fff}
+.primary{background:var(--accent);border-color:var(--accent3);color:#fff}
+.row{display:flex;gap:8px;align-items:center}
+input,select,textarea{font-family:var(--font);font-size:16px;color:var(--text);background:var(--bg2);border:2px solid var(--accent2);border-radius:var(--radius);padding:9px;width:100%;outline:none}
+textarea{min-height:70px;resize:none}
+.filters{display:flex;gap:6px;margin-bottom:10px}
+.filters select{font-size:14px;padding:7px}
+.card{display:flex;gap:10px;background:var(--panel);border:var(--border) solid var(--accent2);border-radius:var(--radius);padding:10px;margin-bottom:10px;box-shadow:var(--card-shadow);animation:pop .3s}
+.cover{width:62px;height:82px;flex:none;border:2px solid var(--accent3);border-radius:var(--radius);background:var(--panel2) center/cover;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;text-shadow:2px 2px 0 #000;image-rendering:pixelated}
+.info{flex:1;min-width:0}
+.info h3{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--title-font)}
+.meta{font-size:11px;color:var(--muted);margin:3px 0}
+.hype{display:flex;gap:3px;margin:4px 0}
+.hype i{width:14px;height:8px;background:var(--bg2);border:1px solid var(--accent3)}
+.hype i.f{background:var(--accent3)}
+.stars{color:var(--accent3);font-size:13px}
+.acts{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.acts button{padding:5px 8px;font-size:11px;box-shadow:2px 2px 0 #000}
+.empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14px;line-height:1.6}
+.empty b{font-size:40px;display:block}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bg2);border-top:var(--border) solid var(--accent);padding:6px 6px calc(var(--sb) + 6px);z-index:20}
+nav button{flex:1;background:none;border:none;box-shadow:none;font-size:10px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0}
+nav button span{font-size:22px}
+nav button.on{color:var(--accent3);background:none}
+.fab{position:fixed;right:18px;bottom:calc(var(--sb) + 84px);width:60px;height:60px;border-radius:var(--radius);font-size:30px;background:var(--accent);border-color:var(--accent3);z-index:21;box-shadow:var(--glow),4px 4px 0 #000}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;z-index:50}
+.modal.show{display:flex}
+.sheet{width:100%;max-height:88%;overflow-y:auto;background:var(--bg2);border-top:var(--border) solid var(--accent);padding:18px 16px calc(var(--sb) + 18px);animation:up .25s;border-radius:var(--radius) var(--radius) 0 0}
+.sheet h2{font-family:var(--title-font);color:var(--accent3);margin-bottom:12px;font-size:20px}
+.sheet label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:700}
+.hypepick{display:flex;gap:6px}
+.hypepick button{flex:1;padding:10px 0}
+.panel{background:var(--panel);border:var(--border) solid var(--accent2);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--card-shadow)}
+.panel h3{font-family:var(--title-font);color:var(--accent3);margin-bottom:8px;font-size:16px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:var(--bg2);padding:10px;border-radius:var(--radius);text-align:center;border:2px solid var(--panel2)}
+.stat b{display:block;font-size:22px;color:var(--accent)}
+.stat small{font-size:10px;color:var(--muted)}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.th{position:relative;padding:10px 8px;border:3px solid transparent;border-radius:8px;text-align:left;box-shadow:none;overflow:hidden;min-height:74px}
+.th.sel{border-color:#fff;box-shadow:0 0 0 2px #000,0 0 14px #fff}
+.th .nm{font-size:13px;font-weight:900;display:block}
+.th .ds{font-size:9px;opacity:.85;display:block;margin-top:2px;font-weight:600}
+.th .sw{display:flex;gap:3px;margin-top:6px}
+.th .sw i{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.4)}
+.th .em{position:absolute;right:6px;top:6px;font-size:20px}
+#toast{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(0);font-family:var(--title-font);font-size:30px;font-weight:900;color:var(--accent3);text-shadow:3px 3px 0 var(--accent),0 0 20px var(--accent);z-index:90;pointer-events:none;text-align:center;white-space:nowrap}
+#toast.go{animation:toast 1.5s forwards}
+.fx{position:fixed;pointer-events:none;z-index:89;font-size:24px}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:88}
+#flash.go{animation:flash .4s}
+.glitch{animation:glitch .5s forwards!important}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bad);animation:blink 1s infinite;margin-left:4px}
+#roller{font-family:var(--title-font);font-size:22px;text-align:center;padding:24px 10px;border:3px dashed var(--accent3);margin:10px 0;min-height:80px;color:var(--accent)}
+.ratepick{display:flex;justify-content:center;gap:6px;font-size:38px;margin:14px 0}
+.ratepick span{cursor:pointer;filter:grayscale(1);opacity:.5}
+.ratepick span.on{filter:none;opacity:1}
+.amb{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.amb i{position:absolute;font-style:normal;opacity:.35;animation:drift linear infinite}
+header,main,nav{position:relative;z-index:2}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes toast{0%{transform:translate(-50%,-50%) scale(0)}20%{transform:translate(-50%,-50%) scale(1.25)}35%,80%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-90%) scale(1);opacity:0}}
+@keyframes flash{0%{opacity:.8}100%{opacity:0}}
+@keyframes glitch{0%{transform:none}20%{transform:translate(-6px,2px) skewX(10deg);filter:hue-rotate(90deg)}40%{transform:translate(6px,-2px) skewX(-10deg)}60%{opacity:.6;clip-path:inset(20% 0 40% 0)}100%{opacity:0;transform:scaleY(0)}}
 @keyframes blink{50%{opacity:0}}
+@keyframes rise{to{transform:translateY(-160px) rotate(var(--r));opacity:0}}
+@keyframes fall{to{transform:translateY(110vh) rotate(var(--r))}}
+@keyframes drift{from{transform:translateY(105vh)}to{transform:translateY(-10vh)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
 
-.empty{text-align:center;padding:40px 18px;color:var(--dim)}
-.empty .big{width:84px;height:84px;margin:0 auto 16px;color:var(--pink);animation:bob 1.4s ease-in-out infinite}
-.empty .big svg{width:100%;height:100%}
-.empty h3{font-family:var(--pix);font-weight:900;color:var(--text);font-size:17px;margin:0 0 8px}
-.empty p{margin:0;font-size:14px;line-height:1.4}
-.empty .blinky{font-family:var(--pix);font-weight:900;color:var(--yellow);margin-top:16px;animation:blink 1s steps(2) infinite}
-@keyframes bob{50%{transform:translateY(-8px)}}
-
-/* ---------- player ---------- */
-.pcard{display:flex;gap:14px;align-items:center;padding:14px;background:var(--panel);border:2px solid var(--line);border-radius:12px;margin-bottom:12px}
-.avatar{width:66px;height:66px;flex:none;border-radius:10px;background:#0f0828;border:2px solid #000;display:grid;place-items:center;color:var(--green)}
-.avatar svg{width:44px;height:44px;animation:bob 1.2s steps(2) infinite}
-.ptitle{font-family:var(--pix);font-weight:900;font-size:17px;color:var(--pink)}
-.plv{font-family:var(--pix);font-weight:900;font-size:13px;color:var(--yellow);margin:3px 0 6px}
-.xpbar.big{width:100%;height:12px}
-.pxp{font-size:12px;color:var(--dim);margin-top:5px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.stat{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px}
-.stat b{display:block;font-family:var(--pix);font-weight:900;font-size:26px}
-.stat span{font-size:12px;color:var(--dim);font-weight:700;letter-spacing:.5px}
-.panel{background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:14px;margin-bottom:18px}
-.hint{font-size:13px;color:var(--dim);line-height:1.45;margin:0}
-.warn{margin-top:10px;font-family:var(--pix);font-weight:900;font-size:13px;color:#000;background:var(--yellow);border-radius:6px;padding:8px 10px;text-align:center;animation:blink 1.2s steps(2) infinite}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.toggle{width:100%;display:flex;justify-content:space-between;align-items:center;background:#0f0828;border:2px solid var(--line);border-radius:8px;padding:12px;font-weight:700}
-.toggle b{font-family:var(--pix);color:var(--green)}
-.toggle b.off{color:var(--red)}
-.foot{text-align:center;font-family:var(--pix);font-size:11px;color:#5d4f92;margin:6px 0 0}
-
-/* ---------- FAB + nav ---------- */
-.fab{position:absolute;z-index:6;right:16px;bottom:calc(var(--sab) * .55 + 80px);width:64px;height:64px;border-radius:14px;border:3px solid #000;
- background:var(--pink);color:#fff;display:grid;place-items:center;padding:0;
- box-shadow:inset -4px -4px 0 rgba(0,0,0,.3),inset 4px 4px 0 rgba(255,255,255,.3),0 5px 0 #000,0 0 22px rgba(255,62,165,.55);animation:fabglow 2s ease-in-out infinite}
-.fab svg{width:24px;height:24px}
-.fab:active{transform:translateY(4px) scale(.96)}
-.fab small{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--pix);font-weight:900;font-size:9px;color:var(--yellow);animation:blink 1.2s steps(2) infinite}
-@keyframes fabglow{50%{box-shadow:inset -4px -4px 0 rgba(0,0,0,.3),inset 4px 4px 0 rgba(255,255,255,.3),0 5px 0 #000,0 0 34px rgba(255,62,165,.9)}}
-nav{position:relative;z-index:5;display:flex;justify-content:space-around;padding:8px 4px calc(var(--sab) * .55 + 6px);background:#0e0828;border-top:2px solid var(--line)}
-nav button{flex:1;background:none;border:0;color:var(--dim);font-family:var(--pix);font-weight:900;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:4px 0;position:relative}
-nav button svg{width:24px;height:24px}
-nav button.on{color:var(--yellow)}
-nav button.on svg{animation:hop .35s}
-nav button.on::after{content:"";position:absolute;bottom:-4px;width:18px;height:3px;background:var(--yellow)}
-@keyframes hop{50%{transform:translateY(-5px)}}
-nav .dot{position:absolute;top:2px;right:calc(50% - 20px);width:9px;height:9px;border-radius:2px;background:var(--red);border:2px solid #0e0828;display:none;animation:blink 1s steps(2) infinite}
-nav .dot.show{display:block}
-
-/* ---------- toasts / fx ---------- */
-#toasts{position:absolute;z-index:40;left:0;right:0;top:calc(var(--sat) + 74px);display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
-.toast{font-family:var(--pix);font-weight:900;font-size:13px;padding:10px 14px;border-radius:8px;background:#000;border:2px solid var(--c,var(--cyan));color:var(--c,var(--cyan));max-width:90%;text-align:center;animation:tin .3s cubic-bezier(.2,1.6,.4,1)}
-.toast.out{animation:tout .3s forwards}
-@keyframes tin{from{transform:translateY(-20px) scale(.8);opacity:0}}
-@keyframes tout{to{transform:translateY(-12px);opacity:0}}
-#fx{position:absolute;inset:0;z-index:30;pointer-events:none;overflow:hidden}
-#confetti{position:absolute;inset:0;width:100%;height:100%}
-.flash{position:absolute;inset:0;background:#fff;animation:flash .35s forwards}
-@keyframes flash{from{opacity:.55}to{opacity:0}}
-.banner{position:absolute;left:0;right:0;top:36%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
-.banner .bicon{width:84px;height:84px;color:var(--c);animation:trophy .8s cubic-bezier(.2,1.8,.4,1);filter:drop-shadow(0 0 14px var(--c))}
-.banner .bicon svg{width:100%;height:100%}
-.btitle{font-family:var(--pix);font-weight:900;font-size:34px;color:var(--c);text-shadow:3px 3px 0 #000,0 0 18px var(--c);padding:0 10px;line-height:1.05}
-.btitle span{display:inline-block;animation:letter .5s cubic-bezier(.2,1.8,.4,1) both;animation-delay:calc(var(--i) * 40ms)}
-.bsub{font-family:var(--pix);font-weight:900;font-size:15px;color:#fff;background:rgba(0,0,0,.75);padding:6px 12px;border-radius:6px;max-width:85%;animation:tin .4s .25s both}
-.banner.out{animation:bout .35s forwards}
-@keyframes letter{from{transform:translateY(-60px) scale(2);opacity:0}}
-@keyframes trophy{from{transform:scale(0) rotate(-30deg)}}
-@keyframes bout{to{transform:scale(1.3);opacity:0}}
-.coin{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6b0,#ffd23f 40%,#c98a00);border:2px solid #7a4f00;
- box-shadow:inset 0 0 0 3px rgba(255,255,255,.25);animation:coin 1s cubic-bezier(.2,.8,.4,1) forwards}
-.coin::after{content:"";position:absolute;left:9px;top:4px;width:4px;height:14px;background:#a56c00;border-radius:2px}
-@keyframes coin{0%{transform:translate(0,0) rotateY(0) scale(.5);opacity:1}60%{opacity:1}100%{transform:translate(var(--dx),-220px) rotateY(1080deg) scale(1);opacity:0}}
-.xpfloat{position:absolute;z-index:45;right:62px;top:calc(var(--sat) + 44px);font-family:var(--pix);font-weight:900;font-size:16px;color:var(--green);text-shadow:2px 2px 0 #000;animation:xpf 1.3s forwards;pointer-events:none}
-@keyframes xpf{from{transform:translateY(10px);opacity:0}20%{transform:none;opacity:1}to{transform:translateY(-30px);opacity:0}}
-.shake{animation:shk .35s}
-@keyframes shk{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-
-/* ---------- sheet + dialogs ---------- */
-#modal,#dialog{position:absolute;inset:0;z-index:20;display:none}
-#dialog{z-index:35}
-#modal.show,#dialog.show{display:block}
-.scrim{position:absolute;inset:0;background:rgba(5,2,15,.7);animation:fade .25s}
-@keyframes fade{from{opacity:0}}
-.sheet{position:absolute;left:0;right:0;bottom:0;max-height:92%;display:flex;flex-direction:column;background:var(--panel);border-top:3px solid var(--pink);border-radius:18px 18px 0 0;
- box-shadow:0 -10px 40px rgba(255,62,165,.25);animation:up .38s cubic-bezier(.2,1.2,.4,1)}
-.closing .sheet{animation:down .25s forwards}
-.closing .scrim{animation:fade .25s reverse forwards}
-@keyframes up{from{transform:translateY(100%)}}
-@keyframes down{to{transform:translateY(100%)}}
-.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 0}
-.sheet-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px 6px}
-.sheet-h b{font-family:var(--pix);font-weight:900;font-size:19px;color:var(--pink)}
-.x{width:36px;height:36px;border-radius:8px;border:2px solid var(--line);background:#0f0828;color:var(--dim);font-weight:900;padding:0}
-.sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 16px 10px}
-.sheet-body label,.flabel{display:block;font-family:var(--pix);font-weight:900;font-size:12px;color:var(--cyan);margin:12px 0 6px;letter-spacing:.5px}
-.sheet-body label input,.sheet-body label select,.sheet-body label textarea{margin-top:6px}
-.sheet-body .row2{margin-top:0}
-textarea{resize:none;line-height:1.4}
-.sheet-f{display:flex;gap:10px;padding:12px 16px calc(var(--sab) * .6 + 12px);border-top:2px solid var(--line)}
-.sheet-f .primary{flex:1}
-.cover-pick{display:flex;gap:14px;align-items:center}
-.cover.big{width:84px;height:112px}
-.cover.big .gen b{font-size:30px}
-.cover-pick .btns{display:flex;gap:6px;margin-bottom:8px}
-.hypepick{display:flex;gap:6px;align-items:flex-end;height:58px}
-.hypepick button{flex:1;border:2px solid #000;border-radius:6px;background:#2c2357;padding:0;transition:background .15s,transform .15s}
-.hypepick button:nth-child(1){height:30%}.hypepick button:nth-child(2){height:47%}.hypepick button:nth-child(3){height:64%}.hypepick button:nth-child(4){height:82%}.hypepick button:nth-child(5){height:100%}
-.hypepick button.on:nth-child(1){background:#3dff8a}.hypepick button.on:nth-child(2){background:#b6ff3d}.hypepick button.on:nth-child(3){background:#ffd23f}.hypepick button.on:nth-child(4){background:#ff9a3d}.hypepick button.on:nth-child(5){background:#ff3e5e}
-.hypepick button.pop{transform:scaleY(1.12)}
-#hypeLbl{color:var(--yellow);float:right}
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#0f0828;border:2px solid var(--line);border-radius:10px;padding:4px}
-.seg button{border:0;background:none;border-radius:7px;padding:10px 0;font-family:var(--pix);font-weight:900;font-size:12px;color:var(--dim)}
-.seg button.on[data-st=backlog]{background:var(--pink);color:#fff}
-.seg button.on[data-st=playing]{background:var(--cyan);color:#05202a}
-.seg button.on[data-st=done]{background:var(--green);color:#052a14}
-.starpick{display:flex;gap:6px}
-.starpick button{border:0;background:none;padding:0;font-size:34px;line-height:1;color:#3b2f6b;transition:transform .15s}
-.starpick button.on{color:var(--yellow);text-shadow:0 0 10px rgba(255,210,63,.6)}
-.starpick button.pop{transform:scale(1.35) rotate(12deg)}
-.dlg{position:absolute;left:50%;top:50%;width:min(88%,360px);transform:translate(-50%,-50%);background:var(--panel);border:3px solid var(--c,var(--cyan));border-radius:14px;padding:18px;text-align:center;
- box-shadow:0 8px 0 #000,0 0 30px rgba(34,228,255,.25);animation:pop .35s cubic-bezier(.2,1.6,.4,1)}
-@keyframes pop{from{transform:translate(-50%,-50%) scale(.6);opacity:0}}
-.dlg-t{font-family:var(--pix);font-weight:900;font-size:20px;color:var(--c,var(--cyan));margin-bottom:8px}
-.dlg-m{font-size:14px;color:var(--dim);line-height:1.45;margin-bottom:16px;word-wrap:break-word}
-.dlg-b{display:flex;flex-direction:column;gap:8px}
-.dlg textarea{margin-bottom:12px;font-size:13px;font-family:var(--pix)}
-.dlg .starpick{justify-content:center;margin:8px 0 18px}
-.reel{height:86px;border:3px solid #000;border-radius:10px;background:#05020f;display:grid;place-items:center;padding:8px;margin:8px 0;overflow:hidden;
- box-shadow:inset 0 0 20px rgba(255,62,165,.4)}
-.reel-item{font-family:var(--pix);font-weight:900;font-size:19px;color:#fff;line-height:1.15;animation:roll .08s}
-@keyframes roll{from{transform:translateY(-30px);opacity:.3}}
-.reel.win{border-color:var(--yellow);animation:winflash .25s 4}
-.reel.win .reel-item{color:var(--yellow)}
-@keyframes winflash{50%{box-shadow:inset 0 0 30px var(--yellow),0 0 20px var(--yellow)}}
-.reel-sub{font-family:var(--pix);font-size:12px;color:var(--dim);min-height:16px;margin-bottom:14px}
+/* ===== Theme-specific flourishes ===== */
+body[data-theme=cozy] .card,body[data-theme=cozy] .panel{border-style:dashed}
+body[data-theme=dungeon] .logo,body[data-theme=fantasy] .logo{letter-spacing:2px}
+body[data-theme=scary] .logo{animation:flick 3s infinite}
+@keyframes flick{0%,92%,100%{opacity:1}93%{opacity:.3}95%{opacity:1}97%{opacity:.5}}
+body[data-theme=arcade] .logo{animation:neon 1.6s ease-in-out infinite alternate}
+@keyframes neon{to{text-shadow:2px 2px 0 var(--accent2),0 0 24px var(--accent),0 0 40px var(--accent)}}
+body[data-theme=gameboy] .cover{filter:grayscale(1) sepia(1) hue-rotate(50deg) saturate(2)}
+body[data-theme=gameboy] *{text-shadow:none!important}
+body[data-theme=vaporwave] .logo{font-style:italic}
+body[data-theme=cyberpunk] .card{clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+body[data-theme=western] .card,body[data-theme=western] .panel{border-style:double;border-width:5px}
+body[data-theme=candy] .card,body[data-theme=candy] .panel{border-radius:18px}
 </style>
 </head>
-<body>
-<div id="root">
-  <div class="bg"><div class="stars"></div><div class="sun"></div><div class="grid"></div></div>
+<body data-theme="pixel">
+<div class="amb" id="amb"></div>
+<div id="app">
   <header>
-    <div class="logo" id="logo"><span class="b">BACK</span><span class="g">GAMING</span></div>
-    <div class="hud">
-      <div class="lvlbox"><div class="lvl">LV<b id="lvl">1</b></div><div class="xpbar"><i id="xpfill" style="width:0"></i></div></div>
-      <button class="iconbtn" id="soundBtn" aria-label="Toggle sound"></button>
-    </div>
+    <div class="logo" id="logo">BACKGAMING<small id="tagline">PRESS START TO PLAY</small></div>
+    <div class="xpbox"><div id="rank">LV 1 · Rookie</div><div class="xpbar"><i id="xpfill" style="width:0"></i></div><div id="xptxt" style="margin-top:3px">0 XP</div></div>
   </header>
-  <main id="view"></main>
-  <button id="fab" class="fab" aria-label="Add game"></button>
+  <main id="main"></main>
+  <button class="fab" id="fab" onclick="openAdd()">+</button>
   <nav id="nav">
-    <button data-tab="queue"></button>
-    <button data-tab="playing"></button>
-    <button data-tab="cleared"></button>
-    <button data-tab="player"></button>
+    <button data-v="queue" class="on"><span>🕹️</span>QUEUE</button>
+    <button data-v="playing"><span>🎮</span>PLAYING</button>
+    <button data-v="cleared"><span>🏆</span>CLEARED</button>
+    <button data-v="roll"><span>🎲</span>ROLL</button>
+    <button data-v="player"><span>👾</span>PLAYER</button>
   </nav>
-  <div id="modal"></div>
-  <div id="fx"><canvas id="confetti"></canvas></div>
-  <div id="dialog"></div>
-  <div id="toasts"></div>
 </div>
-<input type="file" id="coverInput" accept="image/*" hidden>
-<input type="file" id="importInput" accept=".json,application/json,text/plain" hidden>
-<datalist id="genres"></datalist>
-<script src="app.js"></script>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div><div id="flash"></div>
+<input type="file" id="importFile" accept=".json,application/json" style="display:none">
+<input type="file" id="artFile" accept="image/*" style="display:none">
+
+<script>
+/* ================= THEMES ================= */
+const THEMES={
+ pixel:{name:"Pixel",em:"👾",ds:"The OG synthwave 8-bit",c:["#0d0221","#1a0b3a","#241050","#2e1563","#f4ecff","#a99bd1","#ff2a6d","#05d9e8","#f9c80e"],font:'"Courier New",monospace',r:4,tag:"PRESS START TO PLAY",wave:"square",
+  w:{save:"QUEST SAVED!",start:"PLAYER 1 READY!",clear:"LEVEL CLEAR!",del:"GAME OVER"},fx:["🪙","⭐","💎"],amb:[],ranks:["Rookie","Button Masher","Side Quester","Combo King","Speedrunner","Completionist","Backlog Slayer"]},
+ cozy:{name:"Cozy",em:"☕",ds:"Blankets, cocoa & rain",c:["#2b1d16","#3b2a20","#4a3428","#5a4032","#fbeee0","#c9a98d","#e07a5f","#81b29a","#f2cc8f"],font:'Georgia,serif',r:14,tag:"GRAB A BLANKET",wave:"sine",
+  w:{save:"TUCKED IN!",start:"COZY TIME!",clear:"ALL WRAPPED UP!",del:"SWEPT AWAY"},fx:["🍂","☕","🧸"],amb:["🍂","🕯️","☁️"],ranks:["Sleepy Bean","Tea Sipper","Blanket Fort Builder","Hearth Keeper","Lo-fi Legend","Snuggle Sage","Coziest Gamer Alive"]},
+ dungeon:{name:"Dungeon",em:"🗝️",ds:"Torches, stone & loot",c:["#121212","#1e1b18","#2a2520","#38312a","#e8dcc4","#9a8c74","#d35400","#7f8c8d","#f1c40f"],font:'"Papyrus","Luminari",fantasy,serif',r:2,tag:"ENTER IF YOU DARE",wave:"square",
+  w:{save:"LOOT STASHED!",start:"DESCENDING...",clear:"BOSS SLAIN!",del:"YOU DIED"},fx:["🗝️","💰","🗡️"],amb:["🔥","🦴"],ranks:["Cellar Rat","Torch Bearer","Trap Dodger","Crypt Crawler","Loot Goblin","Dungeon Master","Lich of the Backlog"]},
+ scary:{name:"Scary",em:"🎃",ds:"Don't game alone…",c:["#050505","#140707","#1c0b0b","#2a0f0f","#f0e6e6","#8f6b6b","#b30000","#6b8e23","#ff7518"],font:'"Chiller","Creepster","Courier New",monospace',r:0,tag:"IT'S BEHIND YOU",wave:"sawtooth",
+  w:{save:"IT REMEMBERS...",start:"THEY'RE COMING!",clear:"YOU SURVIVED!",del:"GONE FOREVER"},fx:["👻","🦇","💀"],amb:["🦇","🕸️","👁️"],ranks:["Scaredy Cat","Night Light User","Ghost Hunter","Crypt Keeper","Final Girl","Nightmare Fuel","The Thing in the Backlog"]},
+ arcade:{name:"Arcade",em:"🕹️",ds:"Neon, tokens & high scores",c:["#000000","#0a0a1f","#11113a","#1a1a55","#ffffff","#8888cc","#ff00ff","#00ffff","#ffff00"],font:'"Courier New",monospace',r:0,tag:"INSERT COIN",wave:"square",
+  w:{save:"HIGH SCORE!",start:"READY? FIGHT!",clear:"PERFECT!",del:"CONTINUE? NO"},fx:["🪙","🍒","👾"],amb:[],ranks:["Token Rookie","Quarter Pusher","Combo Breaker","Cabinet Champ","Initials: AAA","Arcade Legend","Kill Screen"]},
+ fantasy:{name:"Fantasy",em:"🧙",ds:"Spells, dragons & elves",c:["#1b1035","#26174a","#33205e","#422a75","#f5edff","#b9a6e0","#9d4edd","#48cae4","#ffd166"],font:'"Palatino Linotype","Book Antiqua",Palatino,serif',r:10,tag:"A NEW TALE BEGINS",wave:"triangle",
+  w:{save:"SPELL INSCRIBED!",start:"THE QUEST BEGINS!",clear:"PROPHECY FULFILLED!",del:"BANISHED!"},fx:["✨","🔮","🐉"],amb:["✨","🌙"],ranks:["Village Apprentice","Hedge Wizard","Elf Ranger","Dragon Tamer","Archmage","Realm Guardian","Backlog Sorcerer Supreme"]},
+ adventure:{name:"Adventure",em:"🗺️",ds:"Maps, jungles & treasure",c:["#1f2d1f","#2a3d27","#36502f","#43633a","#f6f1dc","#b5b48e","#e76f51","#2a9d8f","#e9c46a"],font:'"Trebuchet MS",sans-serif',r:8,tag:"X MARKS THE SPOT",wave:"triangle",
+  w:{save:"MAP UPDATED!",start:"ONWARD!",clear:"TREASURE FOUND!",del:"LOST AT SEA"},fx:["🧭","💰","🗺️"],amb:["🍃","🦜"],ranks:["Tourist","Trailblazer","Rope Swinger","Temple Raider","Cartographer","Legendary Explorer","Backlog Indiana"]},
+ scifi:{name:"Sci-Fi",em:"🚀",ds:"Starships & hyperdrives",c:["#020617","#0b1530","#13214a","#1c2f66","#e0f2ff","#7c9cc4","#38bdf8","#a78bfa","#facc15"],font:'"Avenir Next","Segoe UI",sans-serif',r:12,tag:"ALL SYSTEMS GO",wave:"sine",
+  w:{save:"DATA UPLINKED!",start:"WARP SPEED!",clear:"MISSION COMPLETE!",del:"AIRLOCKED"},fx:["🚀","🛸","🌟"],amb:["⭐","✦","·"],ranks:["Cadet","Ensign","Pilot","Commander","Captain","Admiral","Galactic Overlord"]},
+ cyberpunk:{name:"Cyberpunk",em:"🌆",ds:"Chrome, rain & glitch",c:["#0a0a0f","#12121c","#1b1b2b","#25253d","#fcee0a","#9a9a3a","#fcee0a","#00f0ff","#ff003c"],font:'"Courier New",monospace',r:0,tag:"WAKE UP, GAMER",wave:"sawtooth",
+  w:{save:"UPLOADED.EXE",start:"JACKED IN!",clear:"SYSTEM HACKED!",del:"FLATLINED"},fx:["💾","⚡","🔌"],amb:["▮","▯"],ranks:["Street Kid","Netrunner","Fixer","Chrome Junkie","Solo","Edgerunner","Backlog Legend of Night City"]},
+ gameboy:{name:"Handheld",em:"🔋",ds:"Four shades of green",c:["#0f380f","#1d4a1d","#306230","#3e723e","#e0f8d0","#9bbc0f","#8bac0f","#9bbc0f","#c4e86b"],font:'"Courier New",monospace',r:2,tag:"NINTEN... DOH",wave:"square",
+  w:{save:"SAVED TO CART!",start:"PRESS A!",clear:"YOU WIN!",del:"BATTERY DEAD"},fx:["🔋","🟩","⬛"],amb:[],ranks:["Blowing on Cart","AA Collector","Link Cable Kid","Pocket Pro","Handheld Hero","Brick Master","Pocket Monster"]},
+ vaporwave:{name:"Vaporwave",em:"🌴",ds:"ａｅｓｔｈｅｔｉｃ",c:["#1a0933","#2d0f4f","#3d1566","#521c85","#fff0fb","#d7a8e6","#ff71ce","#01cdfe","#fffb96"],font:'"Arial Black",sans-serif',r:0,tag:"ＥＮＪＯＹ ＴＨＥ ＶＩＢＥＳ",wave:"sine",
+  w:{save:"ＳＡＶＥＤ",start:"ＶＩＢＥ ＣＨＥＣＫ",clear:"ＡＥＳＴＨＥＴＩＣ",del:"ＤＥＬＥＴＥＤ"},fx:["🌴","🗿","🐬"],amb:["🌴","🐬"],ranks:["Mall Walker","Windows 95 Fan","Dolphin Whisperer","Sunset Chaser","Palm Tree Sage","Statue Enjoyer","ＢＡＣＫＬＯＧ　ＧＯＤ"]},
+ candy:{name:"Candy",em:"🍭",ds:"Sweet, bubbly & bouncy",c:["#ffe4f1","#ffd1e8","#ffffff","#fff0f7","#5a2a4a","#a66b8f","#ff4fa3","#7bd3ff","#ffb400"],font:'"Chalkboard SE","Comic Sans MS",cursive',r:18,tag:"SWEET GAMES AHEAD",wave:"sine",
+  w:{save:"YUMMY!",start:"SUGAR RUSH!",clear:"SWEET VICTORY!",del:"MELTED"},fx:["🍬","🍭","🧁"],amb:["🍬","🫧"],ranks:["Gummy Bear","Lollipop Licker","Cupcake Cadet","Candy Crusher","Sugar Baron","Sprinkle Supreme","Royal Sweet Tooth"]},
+ ocean:{name:"Ocean",em:"🌊",ds:"Deep blue & bubbles",c:["#012a36","#023e50","#04546b","#066a87","#e6fbff","#88c5d6","#ff8c61","#2ec4b6","#ffe66d"],font:'"Trebuchet MS",sans-serif',r:14,tag:"DIVE IN",wave:"sine",
+  w:{save:"MESSAGE IN A BOTTLE!",start:"ANCHORS AWEIGH!",clear:"TREASURE SURFACED!",del:"SUNK"},fx:["🐠","🫧","🐚"],amb:["🫧","🐟"],ranks:["Puddle Splasher","Snorkeler","Reef Explorer","Deep Diver","Kraken Wrangler","Sea Captain","Leviathan"]},
+ samurai:{name:"Samurai",em:"⛩️",ds:"Cherry blossoms & steel",c:["#1a1414","#261c1c","#332424","#402d2d","#fdf4ef","#bfa39a","#d62828","#f4a6b8","#f7c948"],font:'"Hiragino Mincho ProN","Yu Mincho",serif',r:2,tag:"THE WAY OF THE GAMER",wave:"triangle",
+  w:{save:"HONOR SAVED!",start:"HAJIME!",clear:"VICTORY!",del:"SEPPUKU'D"},fx:["🌸","⚔️","🏮"],amb:["🌸"],ranks:["Ronin","Ashigaru","Ninja","Samurai","Daimyo","Shogun","Sword Saint of the Backlog"]},
+ western:{name:"Wild West",em:"🤠",ds:"Saloons & tumbleweeds",c:["#2e1a0e","#3d2414","#4d2f1b","#5c3a22","#fbe9d0","#c9a578","#c1440e","#d9a441","#f4d35e"],font:'"Rockwell","Courier New",serif',r:3,tag:"YEEHAW, PARTNER",wave:"triangle",
+  w:{save:"ROUNDED UP!",start:"DRAW!",clear:"BOUNTY CLAIMED!",del:"OUTTA TOWN"},fx:["🤠","💰","🌵"],amb:["🌵"],ranks:["Greenhorn","Ranch Hand","Deputy","Gunslinger","Sheriff","Outlaw Legend","Fastest Backlog in the West"]},
+ space:{name:"Retro Space",em:"🪐",ds:"Classic invaders vibe",c:["#000000","#050510","#0a0a20","#121233","#ffffff","#8a8aaa","#39ff14","#ff3131","#ffffff"],font:'"Courier New",monospace',r:0,tag:"THEY CAME FROM SPACE",wave:"square",
+  w:{save:"TARGET LOCKED!",start:"LAUNCH!",clear:"INVASION REPELLED!",del:"ABDUCTED"},fx:["👽","🛸","💫"],amb:["·","✦","⋆"],ranks:["Earthling","Moon Walker","Laser Cadet","Saucer Sniper","Planet Defender","Star Commander","Galaxy Brain"]},
+};
+
+/* ================= STATE ================= */
+const K="backgaming_v1";
+let S=load();
+let view="queue",listTab={queue:"",playing:"",cleared:""},sortBy="added",platF="all",draft=null;
+function load(){try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.games)return Object.assign({theme:"pixel",sound:true,ambient:true},d)}catch(e){}return{games:[],xp:0,lastBackup:0,theme:"pixel",sound:true,ambient:true}}
+function save(){localStorage.setItem(K,JSON.stringify(S))}
+const T=()=>THEMES[S.theme]||THEMES.pixel;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ================= THEME APPLY ================= */
+function applyTheme(id,anim){
+  const t=THEMES[id]||THEMES.pixel,c=t.c,r=document.documentElement.style;
+  ["--bg","--bg2","--panel","--panel2","--text","--muted","--accent","--accent2","--accent3"].forEach((v,i)=>r.setProperty(v,c[i]));
+  r.setProperty("--font",t.font);r.setProperty("--title-font",t.font);r.setProperty("--radius",t.r+"px");
+  r.setProperty("--glow",id==="candy"?"0 4px 12px rgba(255,79,163,.4)":"0 0 12px "+c[6]);
+  r.setProperty("--card-shadow",id==="candy"?"0 4px 0 #e0a3c3":"4px 4px 0 #000");
+  const pats={pixel:"repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.025) 3px 4px)",
+   arcade:"repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,255,255,.04) 2px 3px)",
+   dungeon:"repeating-linear-gradient(0deg,transparent 0 38px,rgba(0,0,0,.35) 38px 40px),repeating-linear-gradient(90deg,transparent 0 78px,rgba(0,0,0,.3) 78px 80px)",
+   cozy:"radial-gradient(circle at 20% 10%,rgba(242,204,143,.12),transparent 40%)",
+   scary:"radial-gradient(ellipse at 50% 0%,rgba(179,0,0,.25),transparent 60%)",
+   fantasy:"radial-gradient(circle at 80% 15%,rgba(255,209,102,.18),transparent 30%)",
+   adventure:"radial-gradient(circle at 10% 90%,rgba(42,157,143,.2),transparent 45%)",
+   scifi:"linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px)",
+   cyberpunk:"repeating-linear-gradient(115deg,transparent 0 30px,rgba(0,240,255,.04) 30px 31px)",
+   gameboy:"repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px),repeating-linear-gradient(90deg,transparent 0 2px,rgba(0,0,0,.15) 2px 3px)",
+   vaporwave:"linear-gradient(transparent 60%,rgba(255,113,206,.15)),repeating-linear-gradient(90deg,transparent 0 40px,rgba(1,205,254,.08) 40px 41px)",
+   candy:"radial-gradient(circle,rgba(255,79,163,.12) 3px,transparent 4px)",
+   ocean:"radial-gradient(ellipse at 50% -10%,rgba(46,196,182,.25),transparent 60%)",
+   samurai:"radial-gradient(circle at 85% 12%,rgba(214,40,40,.35) 0 50px,transparent 51px)",
+   western:"radial-gradient(circle at 50% 110%,rgba(244,211,94,.25),transparent 60%)",
+   space:"radial-gradient(1px 1px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 60%,#fff,transparent),radial-gradient(1px 1px at 40% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 20%,#fff,transparent)"};
+  r.setProperty("--pattern",pats[id]||pats.pixel);
+  if(id==="scifi")document.getElementById("app").style.backgroundSize="24px 24px,24px 24px,auto";else if(id==="candy")document.getElementById("app").style.backgroundSize="28px 28px,auto";else document.getElementById("app").style.backgroundSize="";
+  document.body.dataset.theme=id;
+  document.getElementById("themeColorMeta").content=c[0];
+  document.getElementById("tagline").textContent=t.tag;
+  document.getElementById("logo").firstChild.textContent=t.em+" BACKGAMING";
+  buildAmbient();
+  if(anim){flash();toast(t.name.toUpperCase()+"!");burst(t.fx,16)}
+}
+function buildAmbient(){
+  const a=document.getElementById("amb");a.innerHTML="";const t=T();
+  if(!S.ambient||!t.amb.length)return;
+  for(let i=0;i<10;i++){const e=document.createElement("i");e.textContent=t.amb[i%t.amb.length];
+   e.style.left=Math.random()*100+"%";e.style.fontSize=(12+Math.random()*16)+"px";
+   e.style.animationDuration=(14+Math.random()*16)+"s";e.style.animationDelay=(-Math.random()*25)+"s";a.appendChild(e)}
+}
+
+/* ================= SOUND ================= */
+let AC;
+function tone(seq){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const w=T().wave;let t=AC.currentTime;
+ seq.forEach(([f,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=w;o.frequency.value=f;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d);t+=d*.85})}catch(e){}}
+const SND={
+ save:()=>tone([[988,.08],[1319,.25]]),
+ start:()=>tone([[392,.08],[523,.08],[659,.08],[784,.2]]),
+ clear:()=>tone([[523,.12],[659,.12],[784,.12],[1047,.3],[784,.1],[1047,.4]]),
+ del:()=>tone([[400,.15],[300,.15],[200,.15],[100,.4]]),
+ click:()=>tone([[660,.04]]),
+ roll:()=>tone([[300+Math.random()*600,.04]])
+};
+
+/* ================= FX ================= */
+function toast(txt){const t=document.getElementById("toast");t.textContent=txt;t.classList.remove("go");void t.offsetWidth;t.classList.add("go")}
+function flash(){const f=document.getElementById("flash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go")}
+function burst(icons,n,mode){for(let i=0;i<n;i++){const e=document.createElement("div");e.className="fx";e.textContent=icons[i%icons.length];
+ const W=innerWidth;e.style.setProperty("--r",(Math.random()*720-360)+"deg");
+ if(mode==="fall"){e.style.left=Math.random()*W+"px";e.style.top="-30px";e.style.animation=`fall ${1.6+Math.random()*1.4}s linear forwards`}
+ else{e.style.left=(W/2-60+Math.random()*120)+"px";e.style.top=(innerHeight*.5+Math.random()*40)+"px";e.style.animation=`rise ${.8+Math.random()*.6}s ease-out forwards`}
+ document.body.appendChild(e);setTimeout(()=>e.remove(),3200)}}
+
+/* ================= XP ================= */
+const LV=[0,50,150,300,500,800,1200];
+function lvl(){let l=0;LV.forEach((x,i)=>{if(S.xp>=x)l=i});return l}
+function addXP(n){const b=lvl();S.xp+=n;save();renderXP();if(lvl()>b){setTimeout(()=>{toast("LEVEL UP!");SND.clear()},1600)}}
+function renderXP(){const l=lvl(),nx=LV[l+1]||LV[l]+500,pv=LV[l];
+ document.getElementById("rank").textContent=`LV ${l+1} · ${T().ranks[l]}`;
+ document.getElementById("xpfill").style.width=Math.min(100,(S.xp-pv)/(nx-pv)*100)+"%";
+ document.getElementById("xptxt").textContent=S.xp+" XP"}
+
+/* ================= COVER ================= */
+function initials(t){return(t||"?").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function hueOf(s){let h=0;for(const c of s||"")h=(h*31+c.charCodeAt(0))%360;return h}
+function coverHTML(g){if(g.art)return`<div class="cover" style="background-image:url(${g.art})"></div>`;
+ const h=hueOf(g.title);return`<div class="cover" style="background:repeating-linear-gradient(45deg,hsl(${h},70%,35%) 0 8px,hsl(${h},70%,28%) 8px 16px)">${esc(initials(g.title))}</div>`}
+
+/* ================= RENDER ================= */
+const HYPE=["Meh, maybe","Kinda curious","Sounds fun","Really want it","MUST PLAY"];
+function render(){
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===view));
+ document.getElementById("fab").style.display=["queue","playing"].includes(view)?"":"none";
+ const m=document.getElementById("main");
+ if(view==="roll")return renderRoll(m);
+ if(view==="player")return renderPlayer(m);
+ const st=view;let list=S.games.filter(g=>g.status===st);
+ const plats=[...new Set(S.games.map(g=>g.platform).filter(Boolean))].sort();
+ const q=(listTab[st]||"").toLowerCase();
+ if(q)list=list.filter(g=>(g.title+" "+g.genre+" "+g.notes).toLowerCase().includes(q));
+ if(platF!=="all")list=list.filter(g=>g.platform===platF);
+ list.sort((a,b)=>sortBy==="title"?a.title.localeCompare(b.title):sortBy==="hype"?b.hype-a.hype:sortBy==="rating"?(b.rating||0)-(a.rating||0):b.added-a.added);
+ const label={queue:"🕹️ QUEUE",playing:"🎮 NOW PLAYING",cleared:"🏆 HALL OF FAME"}[st];
+ m.innerHTML=`<h2 style="font-family:var(--title-font);color:var(--accent3);margin:4px 0 8px;font-size:18px">${label} <span style="color:var(--muted);font-size:13px">(${S.games.filter(g=>g.status===st).length})</span></h2>
+ <input id="q" placeholder="🔍 Search..." value="${esc(listTab[st])}" style="margin-bottom:8px">
+ <div class="filters"><select id="sort"><option value="added">Newest</option><option value="title">A–Z</option><option value="hype">Hype</option>${st==="cleared"?'<option value="rating">Rating</option>':""}</select>
+ <select id="plat"><option value="all">All platforms</option>${plats.map(p=>`<option ${p===platF?"selected":""}>${esc(p)}</option>`).join("")}</select></div>
+ <div id="list">${list.length?list.map(card).join(""):`<div class="empty"><b>${T().em}</b>${st==="queue"?"Your backlog is empty!<br>Tap + to add a game.":st==="playing"?"Nothing in progress.<br>Start something from your Queue!":"No games cleared yet.<br>Go get that W!"}</div>`}</div>`;
+ const qi=document.getElementById("q");qi.oninput=e=>{listTab[st]=e.target.value;const p=qi.selectionStart;render();const n=document.getElementById("q");n.focus();n.setSelectionRange(p,p)};
+ const so=document.getElementById("sort");so.value=sortBy;so.onchange=e=>{sortBy=e.target.value;render()};
+ document.getElementById("plat").onchange=e=>{platF=e.target.value;render()};
+}
+function card(g){const hy=[1,2,3,4,5].map(i=>`<i class="${i<=g.hype?"f":""}"></i>`).join("");
+ let acts="";
+ if(g.status==="queue")acts=`<button onclick="startG('${g.id}')">▶ START</button>`;
+ if(g.status==="playing")acts=`<button onclick="clearG('${g.id}')">🏆 CLEAR</button><button onclick="moveG('${g.id}','queue')">⏸ SHELVE</button>`;
+ if(g.status==="cleared")acts=`<button onclick="rateG('${g.id}')">⭐ RATE</button><button onclick="moveG('${g.id}','playing')">🔁 REPLAY</button>`;
+ acts+=`<button onclick="openAdd('${g.id}')">✏️</button><button onclick="delG('${g.id}')">🗑</button>`;
+ return`<div class="card" id="c_${g.id}">${coverHTML(g)}<div class="info"><h3>${esc(g.title)}</h3>
+ <div class="meta">${esc(g.platform||"Any platform")}${g.genre?" · "+esc(g.genre):""}</div>
+ <div class="hype">${hy}</div><div class="meta">${HYPE[g.hype-1]}</div>
+ ${g.status==="cleared"&&g.rating?`<div class="stars">${"★".repeat(g.rating)}${"☆".repeat(5-g.rating)}</div>`:""}
+ ${g.notes?`<div class="meta" style="white-space:normal">📝 ${esc(g.notes)}</div>`:""}
+ <div class="acts">${acts}</div></div></div>`}
+
+function renderRoll(m){const q=S.games.filter(g=>g.status==="queue");
+ m.innerHTML=`<div class="panel"><h3>🎲 ROLL FOR YOUR NEXT GAME</h3><p class="meta">Higher hype = better odds. ${q.length} games in the pool.</p>
+ <div id="roller">${q.length?"???":"Add games to your Queue first!"}</div>
+ <button class="primary" style="width:100%" ${q.length?"":"disabled"} onclick="roll()">🎰 ROLL!</button><div id="rollAct" style="margin-top:8px"></div></div>`}
+function roll(){const q=S.games.filter(g=>g.status==="queue");if(!q.length)return;
+ const pool=[];q.forEach(g=>{for(let i=0;i<g.hype*g.hype;i++)pool.push(g)});
+ const pick=pool[Math.floor(Math.random()*pool.length)],r=document.getElementById("roller");let n=0,steps=18;
+ document.getElementById("rollAct").innerHTML="";
+ (function spin(){r.textContent=q[Math.floor(Math.random()*q.length)].title;SND.roll();n++;
+  if(n<steps)setTimeout(spin,40+n*n*1.2);else{r.textContent="▶ "+pick.title+" ◀";r.style.animation="bounce .5s 2";setTimeout(()=>r.style.animation="",1000);SND.save();burst(T().fx,10);
+   document.getElementById("rollAct").innerHTML=`<button style="width:100%" onclick="startG('${pick.id}');view='playing';render()">▶ START IT NOW</button>`}})()}
+
+function renderPlayer(m){
+ const g=S.games,cl=g.filter(x=>x.status==="cleared"),rated=cl.filter(x=>x.rating);
+ const avg=rated.length?(rated.reduce((a,b)=>a+b.rating,0)/rated.length).toFixed(1):"—";
+ const days=S.lastBackup?Math.floor((Date.now()-S.lastBackup)/864e5):null,stale=days===null||days>7;
+ const plats={};g.forEach(x=>{if(x.platform)plats[x.platform]=(plats[x.platform]||0)+1});
+ const top=Object.entries(plats).sort((a,b)=>b[1]-a[1])[0];
+ m.innerHTML=`
+ <div class="panel"><h3>🎨 THEME</h3><p class="meta" style="margin-bottom:8px">Changes colors, fonts, sounds, rank titles & victory messages.</p>
+ <div class="themes">${Object.entries(THEMES).map(([id,t])=>`<button class="th ${S.theme===id?"sel":""}" style="background:linear-gradient(135deg,${t.c[2]},${t.c[0]});color:${t.c[4]};font-family:${t.font.replace(/"/g,"'")};border-radius:${Math.min(t.r,12)}px" onclick="setTheme('${id}')">
+  <span class="em">${t.em}</span><span class="nm">${t.name}</span><span class="ds">${t.ds}</span>
+  <span class="sw"><i style="background:${t.c[6]}"></i><i style="background:${t.c[7]}"></i><i style="background:${t.c[8]}"></i></span></button>`).join("")}
+  <button class="th" style="background:repeating-linear-gradient(45deg,#ff2a6d 0 12px,#05d9e8 12px 24px,#f9c80e 24px 36px);color:#fff;text-shadow:1px 1px 0 #000" onclick="randomTheme()"><span class="em">🔀</span><span class="nm">Surprise Me</span><span class="ds">Random theme roulette</span></button></div>
+ <div class="row" style="margin-top:10px"><button style="flex:1" onclick="S.sound=!S.sound;save();render()">${S.sound?"🔊 Sound ON":"🔇 Sound OFF"}</button>
+ <button style="flex:1" onclick="S.ambient=!S.ambient;save();buildAmbient();render()">${S.ambient?"✨ Ambient ON":"✨ Ambient OFF"}</button></div></div>
+ <div class="panel"><h3>📊 STATS</h3><div class="stats">
+ <div class="stat"><b>${g.filter(x=>x.status==="queue").length}</b><small>IN QUEUE</small></div>
+ <div class="stat"><b>${g.filter(x=>x.status==="playing").length}</b><small>PLAYING</small></div>
+ <div class="stat"><b>${cl.length}</b><small>CLEARED</small></div>
+ <div class="stat"><b>${avg}</b><small>AVG RATING</small></div>
+ <div class="stat"><b>${S.xp}</b><small>TOTAL XP</small></div>
+ <div class="stat"><b style="font-size:15px">${top?esc(top[0]):"—"}</b><small>TOP PLATFORM</small></div></div></div>
+ <div class="panel"><h3>💾 BACKUP ${stale?'<span class="dot"></span>':""}</h3>
+ <p class="meta" style="margin-bottom:10px">${days===null?"Never backed up!":days===0?"Backed up today ✅":`Last backup ${days} day${days>1?"s":""} ago`}</p>
+ <button class="primary" style="width:100%;margin-bottom:8px" onclick="exportData()">⬇ EXPORT SAVE FILE</button>
+ <button style="width:100%;margin-bottom:8px" onclick="document.getElementById('importFile').click()">⬆ LOAD SAVE FILE</button>
+ <div class="row"><button style="flex:1" onclick="copyCode()">📋 COPY CODE</button><button style="flex:1" onclick="pasteCode()">📥 PASTE CODE</button></div></div>`}
+
+/* ================= ACTIONS ================= */
+function setTheme(id){if(S.theme===id)return;S.theme=id;save();applyTheme(id,true);renderXP();render()}
+function randomTheme(){const ids=Object.keys(THEMES).filter(i=>i!==S.theme);setTheme(ids[Math.floor(Math.random()*ids.length)])}
+function find(id){return S.games.find(g=>g.id===id)}
+function startG(id){const g=find(id);g.status="playing";g.started=Date.now();save();flash();toast(T().w.start);SND.start();addXP(10);render()}
+function moveG(id,st){find(id).status=st;save();SND.click();render()}
+function clearG(id){const g=find(id);g.status="cleared";g.cleared=Date.now();save();toast(T().w.clear);SND.clear();burst(["🎉","🎊",...T().fx],40,"fall");
+ const tr=document.createElement("div");tr.className="fx";tr.textContent="🏆";tr.style.cssText="left:50%;top:55%;font-size:70px;transform:translateX(-50%);animation:bounce .5s 3";document.body.appendChild(tr);setTimeout(()=>tr.remove(),1600);
+ addXP(50);render();setTimeout(()=>rateG(id),1500)}
+function delG(id){if(!confirm("Delete this game?"))return;const c=document.getElementById("c_"+id);if(c)c.classList.add("glitch");SND.del();toast(T().w.del);
+ setTimeout(()=>{S.games=S.games.filter(g=>g.id!==id);save();render()},500)}
+function rateG(id){const g=find(id);let r=g.rating||0;
+ openSheet(`<h2>⭐ RATE ${esc(g.title)}</h2><div class="ratepick" id="rp">${[1,2,3,4,5].map(i=>`<span data-i="${i}">⭐</span>`).join("")}</div>
+ <div class="row"><button style="flex:1" onclick="closeSheet()">SKIP</button><button class="primary" style="flex:1" id="rsave">SAVE</button></div>`);
+ const upd=()=>document.querySelectorAll("#rp span").forEach(s=>s.classList.toggle("on",+s.dataset.i<=r));upd();
+ document.querySelectorAll("#rp span").forEach(s=>s.onclick=()=>{r=+s.dataset.i;SND.click();upd()});
+ document.getElementById("rsave").onclick=()=>{g.rating=r;save();closeSheet();SND.save();render()}}
+
+function openAdd(id){const g=id?find(id):null;draft={art:g?g.art:"",hype:g?g.hype:3};
+ openSheet(`<h2>${g?"✏️ EDIT GAME":"➕ NEW GAME"}</h2>
+ <label>TITLE</label><input id="fT" value="${esc(g?g.title:"")}" placeholder="e.g. Hollow Knight">
+ <label>PLATFORM</label><input id="fP" list="pl" value="${esc(g?g.platform:"")}" placeholder="Switch, PS5, PC..."><datalist id="pl">${["PC","PS5","PS4","Xbox Series X|S","Switch","Switch 2","Steam Deck","iPhone","Retro"].map(p=>`<option>${p}</option>`).join("")}</datalist>
+ <label>GENRE</label><input id="fG" value="${esc(g?g.genre:"")}" placeholder="RPG, Platformer...">
+ <label>HYPE METER</label><div class="hypepick" id="hp">${[1,2,3,4,5].map(i=>`<button data-i="${i}">${"🔥".repeat(1)}${i}</button>`).join("")}</div><div class="meta" id="hl" style="margin-top:4px"></div>
+ <label>BOX ART</label><div class="row"><div id="artPrev">${coverHTML({title:g?g.title:"?",art:draft.art})}</div><button onclick="document.getElementById('artFile').click()">📷 ADD ART</button>${draft.art?'<button onclick="draft.art=\'\';document.getElementById(\'artPrev\').innerHTML=coverHTML({title:\'?\'})">✖</button>':""}</div>
+ <label>NOTES</label><textarea id="fN" placeholder="Why you want to play it...">${esc(g?g.notes:"")}</textarea>
+ <div class="row" style="margin-top:14px"><button style="flex:1" onclick="closeSheet()">CANCEL</button><button class="primary" style="flex:2" onclick="saveG('${id||""}')">💾 SAVE</button></div>`);
+ const upd=()=>{document.querySelectorAll("#hp button").forEach(b=>b.classList.toggle("on",+b.dataset.i<=draft.hype));document.getElementById("hl").textContent=HYPE[draft.hype-1]};upd();
+ document.querySelectorAll("#hp button").forEach(b=>b.onclick=()=>{draft.hype=+b.dataset.i;SND.click();upd()})}
+function saveG(id){const t=document.getElementById("fT").value.trim();if(!t){document.getElementById("fT").focus();return}
+ const d={title:t,platform:document.getElementById("fP").value.trim(),genre:document.getElementById("fG").value.trim(),notes:document.getElementById("fN").value.trim(),hype:draft.hype,art:draft.art};
+ if(id)Object.assign(find(id),d);else{S.games.push(Object.assign({id:uid(),status:view==="playing"?"playing":"queue",added:Date.now()},d));addXP(5)}
+ save();closeSheet();toast(T().w.save);SND.save();burst(T().fx,14);render()}
+
+document.getElementById("artFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),W=180,H=240;c.width=W;c.height=H;const x=c.getContext("2d"),s=Math.max(W/im.width,H/im.height);x.drawImage(im,(W-im.width*s)/2,(H-im.height*s)/2,im.width*s,im.height*s);draft.art=c.toDataURL("image/jpeg",.75);document.getElementById("artPrev").innerHTML=coverHTML({art:draft.art})};im.src=rd.result};rd.readAsDataURL(f);e.target.value=""};
+
+function openSheet(h){document.getElementById("sheet").innerHTML=h;document.getElementById("modal").classList.add("show")}
+function closeSheet(){document.getElementById("modal").classList.remove("show")}
+document.getElementById("modal").onclick=e=>{if(e.target.id==="modal")closeSheet()};
+
+/* ================= BACKUP ================= */
+function payload(){return JSON.stringify({app:"BackGaming",v:2,exported:Date.now(),data:S})}
+function markBackup(){S.lastBackup=Date.now();save();render()}
+async function exportData(){const name=`BackGaming-${new Date().toISOString().slice(0,10)}.json`,blob=new Blob([payload()],{type:"application/json"});
+ try{const f=new File([blob],name,{type:"application/json"});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"BackGaming Save"});markBackup();toast("BACKED UP!");SND.save();return}}catch(e){if(e.name==="AbortError")return}
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();markBackup();toast("BACKED UP!");SND.save()}
+function restore(txt){try{const o=JSON.parse(txt),d=o.data||o;if(!d.games)throw 0;
+ const merge=confirm(`Found ${d.games.length} games.\n\nOK = MERGE with current\nCancel = REPLACE everything`);
+ if(merge){const ids=new Set(S.games.map(g=>g.id));d.games.forEach(g=>{if(!ids.has(g.id))S.games.push(g)});S.xp=Math.max(S.xp,d.xp||0)}
+ else{S=Object.assign({theme:S.theme,sound:true,ambient:true},d)}
+ save();applyTheme(S.theme);renderXP();render();toast("SAVE LOADED!");SND.clear()}catch(e){alert("That doesn't look like a BackGaming save.")}}
+document.getElementById("importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(restore);e.target.value=""};
+function copyCode(){const c=btoa(unescape(encodeURIComponent(payload())));navigator.clipboard.writeText(c).then(()=>{markBackup();toast("CODE COPIED!");SND.save()},()=>prompt("Copy this code:",c))}
+function pasteCode(){const c=prompt("Paste your backup code:");if(!c)return;try{restore(decodeURIComponent(escape(atob(c.trim()))))}catch(e){alert("Invalid code.")}}
+
+/* ================= NAV + ROTATION LOCK ================= */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{view=b.dataset.v;platF="all";SND.click();render();document.getElementById("main").scrollTop=0});
+try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock("portrait").catch(()=>{})}catch(e){}
+function fixRot(){const a=document.getElementById("app"),land=innerWidth>innerHeight&&Math.min(innerWidth,innerHeight)<600;
+ if(land){const ang=(screen.orientation&&screen.orientation.angle)||window.orientation||90;const cw=ang===90||ang===-270;
+  a.classList.add("rotfix");a.style.width=innerHeight+"px";a.style.height=innerWidth+"px";
+  a.style.transform=cw?`rotate(-90deg) translateX(-${innerHeight}px)`:`rotate(90deg) translateY(-${innerWidth}px)`}
+ else{a.classList.remove("rotfix");a.style.width=a.style.height=a.style.transform=""}}
+addEventListener("resize",fixRot);addEventListener("orientationchange",()=>setTimeout(fixRot,100));
+
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+applyTheme(S.theme);renderXP();render();fixRot();
+</script>
 </body>
 </html>
